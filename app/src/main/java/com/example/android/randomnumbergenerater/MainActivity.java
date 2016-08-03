@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,20 +17,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button settings = (Button) findViewById(R.id.settings);
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent settingsActivity = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(settingsActivity);
-                Toast.makeText(MainActivity.this, "打开设置！", Toast.LENGTH_SHORT).show();
-            }
-        });
-        
+	    ImageButton setting = (ImageButton) findViewById(R.id.settings);
+	    Intent setBackground = getIntent();
+	    setting.setImageResource(setBackground.getIntExtra("settingButtonResource", R.mipmap.ic_settings_applications_white_24dp));
+	    ImageView background = (ImageView) findViewById(R.id.background_image);
+	    background.setImageResource(setBackground.getIntExtra("backgroundResource", R.drawable.background_1));
+
+    }
+
+    public void settings(View view){
+        Intent openSettings = new Intent(this, SettingsActivity.class);
+        startActivity(openSettings);
+        Toast.makeText(MainActivity.this, "打开设置！", Toast.LENGTH_SHORT).show();
     }
 
     public void submitGeneration(View view){
-        ImageButton resetButton = (ImageButton) findViewById(R.id.resetButton);
         EditText lo = (EditText) findViewById(R.id.lowerBound);
         EditText hi = (EditText) findViewById(R.id.upperBound);
         EditText num = (EditText) findViewById(R.id.numberToGenerate);
@@ -44,16 +46,9 @@ public class MainActivity extends AppCompatActivity {
             String result = generateRandomNum(lowerBound, upperBound, numberToGenerate);
             showingBox.setText(result);
         }
-        if(lowerBound != 0 || upperBound != 0 || numberToGenerate != 0 || (!showingBox.getText().toString().isEmpty() && !showingBox.getText().toString().equals("0"))){
-            resetButton.setImageResource(R.drawable.is_reset);
-        }
-        else{
-            resetButton.setImageResource(R.drawable.no_reset);
-        }
     }
 
     public void resetAll(View view){
-        ImageButton resetButton = (ImageButton) findViewById(R.id.resetButton);
         EditText lo = (EditText) findViewById(R.id.lowerBound);
         EditText hi = (EditText) findViewById(R.id.upperBound);
         EditText num = (EditText) findViewById(R.id.numberToGenerate);
@@ -62,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         hi.setText("0");
         num.setText("0");
         showingBox.setText("");
-        resetButton.setImageResource(R.drawable.no_reset);
     }
 
     private String generateRandomNum(int lowerBound, int upperBound, int numberToGenerate){
@@ -86,4 +80,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
+
 }
